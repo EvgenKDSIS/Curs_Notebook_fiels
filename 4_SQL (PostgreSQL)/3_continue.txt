@@ -1,0 +1,32 @@
+1) Напишите скрипт, который создаст пустую таблицу mall_customers_temp, где будут customerid, age, spending_score. В качестве родительской таблицы используйте таблицу mall_customers.
+---------------------------------------
+create table public.mall_customers_temp AS 
+	(SELECT genre,
+		 customerid ,
+		 age ,
+		 spending_score
+	FROM public.mall_customers
+	WHERE 1 = 0);
+---------------------------------------
+
+2) Напишите скрипт, который наполнит пустую таблицу mall_customers_temp соответствующими данными из родительской таблицы.
+---------------------------------------
+INSERT INTO public.mall_customers_temp (genre, customerid , age , spending_score )
+SELECT genre,
+		 customerid ,
+		 age ,
+		 spending_score
+FROM public.mall_customers;
+---------------------------------------
+
+3) Напишите скрипт, который удалит из таблицы mall_customers_temp customerid, у которых spending_score меньше средней по genre.
+---------------------------------------
+DELETE
+FROM mall_customers_temp
+WHERE (genre, spending_score) IN 
+	(SELECT genre,
+		 spending_score
+	FROM mall_customers_temp
+	GROUP BY  genre, spending_score
+	HAVING spending_score < AVG(spending_score) );
+---------------------------------------
